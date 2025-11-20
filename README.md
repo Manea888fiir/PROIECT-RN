@@ -47,7 +47,7 @@ project-name/
 
 ### 2.2 Caracteristicile dataset-ului
 
-* **Număr total de observații:** 15
+* **Număr total de observații:** 50
 * **Număr de caracteristici (features):** 1, culoare
 * **Tipuri de date:** ☐ Imagini
 * **Format fișiere:** ☐ PNG 
