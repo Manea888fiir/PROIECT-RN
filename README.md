@@ -41,7 +41,7 @@ project-name/
 
 ### 2.1 Sursa datelor
 
-* **Origine:** Generare cu ajutorul AI + 
+* **Origine:** Generare cu ajutorul AI + Roboflow.com
 * **Modul de achiziție:** ☐ Fișier extern cu ajutorul unui API de pe roboflow.com
 * **Perioada / condițiile colectării:** 20.11.2025 -> finalizare proiect
 
