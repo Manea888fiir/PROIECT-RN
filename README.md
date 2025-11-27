@@ -41,22 +41,23 @@ project-name/
 
 ### 2.1 Sursa datelor
 
-* **Origine:** Generare cu ajutorul AI
-* **Modul de achiziție:** ☐ Fișier extern 
+* **Origine:** Generare cu ajutorul AI + 
+* **Modul de achiziție:** ☐ Fișier extern cu ajutorul unui API de pe roboflow.com
 * **Perioada / condițiile colectării:** 20.11.2025 -> finalizare proiect
 
 ### 2.2 Caracteristicile dataset-ului
 
-* **Număr total de observații:** 50
-* **Număr de caracteristici (features):** 1, culoare
+* **Număr total de observații:** 1000+
+* **Număr de caracteristici (features):** 2
 * **Tipuri de date:** ☐ Imagini
-* **Format fișiere:** ☐ PNG 
+* **Format fișiere:** ☐ PNG / JPG / JPEG 
 
 ### 2.3 Descrierea fiecărei caracteristici
 
 | **Caracteristică** | **Tip** | **Unitate** | **Descriere** | **Domeniu valori** |
 |-------------------|---------|-------------|---------------|--------------------|
-| feature_1 | Imagine | pixeli | Imagini generate cu AI pentru setul de date | 200x200 |
+| feature_1 | Imagine | pixeli | Identificare casca dupa forma si aspect | 640x640 |
+| feature_2 | Imagine | pixeli | Identificare vesta/body de protectie dupa forma si aspect | 640x640 |
 
 **Fișier recomandat:**  `data/README.md`
 
