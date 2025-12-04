@@ -1,0 +1,100 @@
+import os
+import shutil
+import random
+import zipfile
+from pathlib import Path
+from google.colab import files
+
+# ================= CONFIGURARE =================
+ARHIVA_SURSA = "poze.zip" 
+ARHIVA_FINALA = "dataset_gata.zip"
+# ===============================================
+
+def proceseaza_dataset():
+    base_dir = Path("/content")
+    temp_extract = base_dir / "temp_extract"
+    dataset_dir = base_dir / "dataset_final"
+    
+    # 1. Curatenie (stergem rulari anterioare)
+    if temp_extract.exists(): shutil.rmtree(temp_extract)
+    if dataset_dir.exists(): shutil.rmtree(dataset_dir)
+    
+    # 2. Dezarhivam
+    if not os.path.exists(ARHIVA_SURSA):
+        print("❌ EROARE: Nu găsesc poze.zip! Urcă arhiva în stânga.")
+        return
+
+    print("⏳ Dezarhivez și sortez...")
+    with zipfile.ZipFile(ARHIVA_SURSA, 'r') as zip_ref:
+        zip_ref.extractall(temp_extract)
+
+    # 3. Identificam perechile
+    pairs = []
+    # Cautam recursiv toate imaginile
+    all_images = []
+    for ext in ['*.jpg', '*.jpeg', '*.png', '*.bmp', '*.JPG', '*.PNG']:
+        all_images.extend(list(temp_extract.rglob(ext)))
+
+    for img_path in all_images:
+        # Cautam txt-ul cu acelasi nume in acelasi folder
+        txt_path = img_path.with_suffix('.txt')
+        
+        if txt_path.exists():
+            pairs.append((img_path, txt_path))
+    
+    if len(pairs) == 0:
+        print("❌ Tot nu am găsit perechi. Sigur ai pus și .txt în arhivă?")
+        return
+
+    print(f"✅ Am găsit {len(pairs)} perechi valide.")
+
+    # 4. Amestecam si Impartim (80/20)
+    random.shuffle(pairs)
+    split_idx = int(len(pairs) * 0.8)
+    if split_idx == 0: split_idx = len(pairs) # Safety pentru dataset foarte mic
+    
+    train_set = pairs[:split_idx]
+    valid_set = pairs[split_idx:]
+
+    # 5. Cream folderele YOLO
+    structure = [
+        dataset_dir / 'train' / 'images',
+        dataset_dir / 'train' / 'labels',
+        dataset_dir / 'valid' / 'images',
+        dataset_dir / 'valid' / 'labels'
+    ]
+    for folder in structure:
+        folder.mkdir(parents=True, exist_ok=True)
+
+    # 6. Mutam fisierele
+    def muta_fisiere(lista_perechi, tip):
+        for img, txt in lista_perechi:
+            shutil.copy(img, dataset_dir / tip / 'images' / img.name)
+            shutil.copy(txt, dataset_dir / tip / 'labels' / txt.name)
+            
+    muta_fisiere(train_set, 'train')
+    muta_fisiere(valid_set, 'valid')
+    
+    # 7. BONUS: Cream fisierul data.yaml automat
+    # Asta ii spune modelului unde sunt pozele si cate clase ai
+    # Presupunem ca ai o singura clasa momentan (ex: obiectul tau)
+    yaml_content = f"""
+train: ../train/images
+val: ../valid/images
+
+nc: 1
+names: ['obiect']
+"""
+    with open(dataset_dir / 'data.yaml', 'w') as f:
+        f.write(yaml_content)
+    print("✅ Am creat și fișierul data.yaml!")
+
+    # 8. Arhivam si Descarcam
+    print("📦 Fac pachetul final...")
+    shutil.make_archive("/content/dataset_gata", 'zip', dataset_dir)
+    
+    print(f"🎉 GATA! Descarc {ARHIVA_FINALA}...")
+    files.download(f"/content/{ARHIVA_FINALA}")
+
+if __name__ == "__main__":
+    proceseaza_dataset()
