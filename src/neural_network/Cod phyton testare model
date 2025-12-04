@@ -1,0 +1,34 @@
+from ultralytics import YOLO
+from google.colab import files
+from IPython.display import Image, display
+import os
+
+# 1. Incarcam modelul antrenat (cel mai bun rezultat)
+# Calea standard este runs/detect/modelul_meu/weights/best.pt
+path_model = '/content/runs/detect/modelul_meu/weights/best.pt'
+
+if not os.path.exists(path_model):
+    print("❌ Nu găsesc modelul! Sigur s-a terminat antrenamentul?")
+else:
+    model = YOLO(path_model)
+    print("✅ Model încărcat! Acum alege o poză din calculatorul tău...")
+
+    # 2. Buton de upload
+    uploaded = files.upload()
+    file_name = list(uploaded.keys())[0]
+
+    # 3. Facem predictia
+    print(f"🧐 Analizez poza: {file_name}...")
+    results = model.predict(source=file_name, save=True, conf=0.25) 
+    # conf=0.25 inseamna ca ne arata doar daca e 25% sigur
+
+    # 4. Afisam rezultatul
+    # YOLO salveaza rezultatele in runs/detect/predict...
+    # Cautam ultimul folder creat in runs/detect/
+    predict_dirs = sorted([d for d in os.listdir('runs/detect') if 'predict' in d])
+    last_predict_dir = predict_dirs[-1]
+    
+    result_path = f"runs/detect/{last_predict_dir}/{file_name}"
+    
+    print("\n👇 IATĂ REZULTATUL: 👇")
+    display(Image(filename=result_path, width=600))
