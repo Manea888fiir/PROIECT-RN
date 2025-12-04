@@ -1,35 +1,38 @@
-%pip install ultralytics
 from ultralytics import YOLO
 from google.colab import files
 from IPython.display import Image, display
 import os
 
-# 1. Incarcam modelul antrenat (cel mai bun rezultat)
-# Calea standard este runs/detect/modelul_meu/weights/best.pt
-path_model = '/content/runs/detect/modelul_meu/weights/best.pt'
+# 1. Incarcam modelul
+path_model = '/content/runs/detect/modelul_meu2/weights/best.pt'
 
 if not os.path.exists(path_model):
-    print("❌ Nu găsesc modelul! Sigur s-a terminat antrenamentul?")
+    print("❌ Nu găsesc modelul! Verifică calea.")
 else:
     model = YOLO(path_model)
-    print("✅ Model încărcat! Acum alege o poză din calculatorul tău...")
+    print("✅ Model încărcat! Alege o poză...")
 
-    # 2. Buton de upload
+    # 2. Upload
     uploaded = files.upload()
     file_name = list(uploaded.keys())[0]
 
-    # 3. Facem predictia
+    # 3. Predicția
     print(f"🧐 Analizez poza: {file_name}...")
-    results = model.predict(source=file_name, save=True, conf=0.25) 
-    # conf=0.25 inseamna ca ne arata doar daca e 25% sigur
+    # Salvăm rezultatul în variabila 'results'
+    results = model.predict(source=file_name, save=True, conf=0.1) 
 
-    # 4. Afisam rezultatul
-    # YOLO salveaza rezultatele in runs/detect/predict...
-    # Cautam ultimul folder creat in runs/detect/
-    predict_dirs = sorted([d for d in os.listdir('runs/detect') if 'predict' in d])
-    last_predict_dir = predict_dirs[-1]
+    # 4. Afișarea (SOLUȚIA SIGURĂ)
+    # În loc să ghicim folderul, îl luăm direct din rezultat
+    # results[0] este rezultatul primei (și singurei) imagini
+    save_dir = results[0].save_dir 
     
-    result_path = f"runs/detect/{last_predict_dir}/{file_name}"
+    # Construim calea completă corect
+    result_path = os.path.join(save_dir, file_name)
     
     print("\n👇 IATĂ REZULTATUL: 👇")
-    display(Image(filename=result_path, width=600))
+    # Verificăm dacă fișierul există înainte să-l afișăm
+    if os.path.exists(result_path):
+        display(Image(filename=result_path, width=600))
+    else:
+        print(f"Nu găsesc imaginea la: {result_path}")
+        print("S-ar putea să fie salvată cu alt nume (ex: .jpg vs .png)")
