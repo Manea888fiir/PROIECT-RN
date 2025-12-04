@@ -1,3 +1,4 @@
+%pip install ultralytics
 from ultralytics import YOLO
 from google.colab import files
 from IPython.display import Image, display
