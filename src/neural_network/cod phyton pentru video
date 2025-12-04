@@ -1,0 +1,38 @@
+from ultralytics import YOLO
+from google.colab import files
+import os
+
+# 1. Incarcam modelul (Verifica daca calea e corecta!)
+path_model = '/content/runs/detect/modelul_meu2/weights/best.pt' # Sau modelul_meu (v1)
+
+if not os.path.exists(path_model):
+    print("❌ Nu găsesc modelul! Verifică calea.")
+    # Daca nu il gasesti, poti folosi unul standard pentru test:
+    # model = YOLO('yolov8n.pt') 
+else:
+    model = YOLO(path_model)
+    print("✅ Model încărcat! Urcă un video scurt (.mp4)...")
+
+    # 2. Upload Video
+    uploaded = files.upload()
+    video_name = list(uploaded.keys())[0]
+
+    print(f"🎬 Încep procesarea video-ului: {video_name}")
+    print("⏳ Așteaptă, durează puțin (se procesează cadru cu cadru)...")
+
+    # 3. Procesarea
+    # save=True -> salvează video-ul cu pătrățele
+    # conf=0.5 -> arată doar obiectele sigure
+    results = model.predict(source=video_name, save=True, conf=0.5)
+
+    # 4. Găsirea și Descărcarea rezultatului
+    save_dir = results[0].save_dir
+    
+    # YOLO uneori schimba extensia (ex: din mp4 in avi), deci cautam fisierul video in folder
+    files_in_dir = os.listdir(save_dir)
+    # Cautam fisierul care e video (mp4 sau avi)
+    output_video = [f for f in files_in_dir if f.endswith(('.mp4', '.avi'))][0]
+    full_path = os.path.join(save_dir, output_video)
+
+    print(f"🎉 Gata! Descarc rezultatul: {output_video}")
+    files.download(full_path)
