@@ -187,20 +187,20 @@ Toate cele 3 module trebuie să **pornească și să ruleze fără erori** la pr
 #### Detalii per modul:
 #### **Modul 1: Data Logging / Acquisition**
 **Funcționalități obligatorii:**
-- [ ] Cod rulează fără erori: `python src/data_acquisition/generate.py` sau echivalent LabVIEW
-- [ ] Generează CSV în format compatibil cu preprocesarea din Etapa 3
-- [ ] Include minimum 40% date originale în dataset-ul final
-- [ ] Documentație în cod: ce date generează, cu ce parametri
+- [X] Cod rulează fără erori: `python src/data_acquisition/generate.py` sau echivalent LabVIEW
+- [X] Generează CSV în format compatibil cu preprocesarea din Etapa 3
+- [X] Include minimum 40% date originale în dataset-ul final
+- [X] Documentație în cod: ce date generează, cu ce parametri
 #### **Modul 2: Neural Network Module**
 **Funcționalități obligatorii:**
-- [ ] Arhitectură RN definită și compilată fără erori
-- [ ] Model poate fi salvat și reîncărcat
-- [ ] Include justificare pentru arhitectura aleasă (în docstring sau README)
-- [ ] **NU trebuie antrenat** cu performanță bună (weights pot fi random)
+- [X] Arhitectură RN definită și compilată fără erori
+- [X] Model poate fi salvat și reîncărcat
+- [X] Include justificare pentru arhitectura aleasă (în docstring sau README)
+- [X] **NU trebuie antrenat** cu performanță bună (weights pot fi random)
 #### **Modul 3: Web Service / UI**
 **Funcționalități MINIME obligatorii:**
-- [ ] Propunere Interfață ce primește input de la user (formular, file upload, sau API endpoint)
-- [ ] Includeți un screenshot demonstrativ în `docs/screenshots/`
+- [X] Propunere Interfață ce primește input de la user (formular, file upload, sau API endpoint)
+- [X] Includeți un screenshot demonstrativ în `docs/screenshots/`
 **Ce NU e necesar în Etapa 4:**
 - UI frumos/profesionist cu grafică avansată
 - Funcționalități multiple (istorice, comparații, statistici)
@@ -272,4 +272,5 @@ proiect-rn-[nume-prenume]/
 `"Etapa 4 completă - Arhitectură SIA funcțională"`
 **Tag obligatoriu:**  
 `git tag -a v0.4-architecture -m "Etapa 4 - Skeleton complet SIA"`
+
 
