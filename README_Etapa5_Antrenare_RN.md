@@ -2,9 +2,9 @@
 
 **Disciplina:** Rețele Neuronale  
 **Instituție:** POLITEHNICA București – FIIR  
-**Student:** [Nume Prenume]  
-**Link Repository GitHub:** [URL complet]  
-**Data predării:** [Data]
+**Student:** Manea Ionut Florin
+**Link Repository GitHub:** https://github.com/Manea888fiir/PROIECT-RN 
+**Data predării:**11.12.2025
 
 ---
 
@@ -25,12 +25,12 @@ Această etapă corespunde punctului **6. Configurarea și antrenarea modelului 
 
 **Înainte de a începe Etapa 5, verificați că aveți din Etapa 4:**
 
-- [ ] **State Machine** definit și documentat în `docs/state_machine.*`
-- [ ] **Contribuție ≥40% date originale** în `data/generated/` (verificabil)
-- [ ] **Modul 1 (Data Logging)** funcțional - produce CSV-uri
-- [ ] **Modul 2 (RN)** cu arhitectură definită dar NEANTRENATĂ (`models/untrained_model.h5`)
-- [ ] **Modul 3 (UI/Web Service)** funcțional cu model dummy
-- [ ] **Tabelul "Nevoie → Soluție → Modul"** complet în README Etapa 4
+- [X] **State Machine** definit și documentat în `docs/state_machine.*`
+- [X] **Contribuție ≥40% date originale** în `data/generated/` (verificabil)
+- [X] **Modul 1 (Data Logging)** funcțional - produce CSV-uri
+- [X] **Modul 2 (RN)** cu arhitectură definită dar NEANTRENATĂ (`models/untrained_model.h5`)
+- [X] **Modul 3 (UI/Web Service)** funcțional cu model dummy
+- [X] **Tabelul "Nevoie → Soluție → Modul"** complet în README Etapa 4
 
 ** Dacă oricare din punctele de mai sus lipsește → reveniți la Etapa 4 înainte de a continua.**
 
@@ -484,5 +484,6 @@ Exemplu:
 3. Push: `git push origin main --tags`
 
 ---
+
 
 **Mult succes! Această etapă demonstrează că Sistemul vostru cu Inteligență Artificială (SIA) funcționează în condiții reale!**
