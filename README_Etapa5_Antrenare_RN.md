@@ -112,6 +112,7 @@ Aceasta oferă un echilibru între:
 - Memorie GPU (batch prea mare → out of memory)
 - Timp antrenare (batch 32 asigură convergență în ~50 epoci pentru problema noastră)
 ```
+Am selectat un Batch Size de 16 pentru a optimiza utilizarea memoriei VRAM disponibile în mediul Google Colab și pentru a asigura o convergență stabilă a algoritmului Stochastic Gradient Descent (SGD). Având în vedere dimensiunea redusă a setului de date, această valoare oferă un echilibru optim între viteza de procesare și granularitatea actualizării ponderilor, prevenind instabilitatea antrenamentului.
 
 **Resurse învățare rapidă:**
 - Împărțire date: https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.train_test_split.html (video 3 min: https://youtu.be/1NjLMWSGosI?si=KL8Qv2SJ1d_mFZfr)  
@@ -487,3 +488,4 @@ Exemplu:
 
 
 **Mult succes! Această etapă demonstrează că Sistemul vostru cu Inteligență Artificială (SIA) funcționează în condiții reale!**
+
