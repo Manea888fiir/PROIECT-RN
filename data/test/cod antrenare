@@ -10,7 +10,7 @@ import yaml
 # CONFIGURARE
 # ==========================================
 ARHIVA_DATASET = "dataset_gata.zip"  # Asigura-te ca ai incarcat fisierul asta!
-NUMAR_EPOCI = 50                     # Cat timp sa invete (50-100 e ok pt inceput)
+NUMAR_EPOCI = 250                    
 # ==========================================
 
 # 2. Dezarhivam dataset-ul
