@@ -104,6 +104,17 @@ Completați tabelul cu hiperparametrii folosiți și **justificați fiecare aleg
 | Loss function | Ex: Categorical Crossentropy | Clasificare multi-class cu K=[numărul vostru] clase |
 | Activation functions | Ex: ReLU (hidden), Softmax (output) | ReLU pentru non-linearitate, Softmax pentru probabilități clase |
 
+### Tabel Hiperparametri și Justificare **COMPLETAT**
+
+| **Hiperparametru** | **Valoare Aleasă** | **Justificare** |
+|--------------------|-------------------|-----------------|
+| **Learning rate** | 0.01 (Auto) | Valoare standard pentru YOLOv8 (SGD), ideală pentru fine-tuning fără a altera drastic cunoștințele anterioare. |
+| **Batch size** | 16 | Compromis optim între memoria GPU disponibilă (16GB VRAM) și stabilitatea gradientului pentru dataset-ul curent. |
+| **Number of epochs** | 200 (Stop la 6) | Setat inițial la 200, dar limitat de mecanismul Early Stopping (patience=5) pentru a preveni overfitting-ul odată atinsă convergența. |
+| **Optimizer** | SGD | Stochastic Gradient Descent este optimizatorul implicit al YOLOv8, oferind o generalizare superioară în sarcini de Computer Vision față de Adam. |
+| **Loss function** | Box (CIoU) + Class (BCE) | Complete IoU Loss pentru precizia geometrică a bounding box-urilor și Binary Cross Entropy pentru clasificarea obiectelor. |
+| **Activation functions** | SiLU | Sigmoid Linear Unit este funcția de activare nativă a arhitecturii YOLOv8, mai performantă decât ReLU în rețele adânci. |
+
 **Justificare detaliată batch size (exemplu):**
 ```
 Am ales batch_size=32 pentru că avem N=15,000 samples → 15,000/32 ≈ 469 iterații/epocă.
@@ -488,4 +499,5 @@ Exemplu:
 
 
 **Mult succes! Această etapă demonstrează că Sistemul vostru cu Inteligență Artificială (SIA) funcționează în condiții reale!**
+
 
