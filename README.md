@@ -41,13 +41,13 @@ project-name/
 
 ### 2.1 Sursa datelor
 
-* **Origine:** Generare cu ajutorul AI + Roboflow.com
-* **Modul de achiziție:** ☐ Fișier extern cu ajutorul unui API de pe roboflow.com
+* **Origine:** Generare cu ajutorul AI
+* **Modul de achiziție:** ☐ Set de date cu imagini selectate, descarcate si prelucrate personal.
 * **Perioada / condițiile colectării:** 20.11.2025 -> finalizare proiect
 
 ### 2.2 Caracteristicile dataset-ului
 
-* **Număr total de observații:** 1000+
+* **Număr total de observații:** 100+
 * **Număr de caracteristici (features):** 2
 * **Tipuri de date:** ☐ Imagini
 * **Format fișiere:** ☐ PNG / JPG / JPEG 
@@ -57,7 +57,7 @@ project-name/
 | **Caracteristică** | **Tip** | **Unitate** | **Descriere** | **Domeniu valori** |
 |-------------------|---------|-------------|---------------|--------------------|
 | feature_1 | Imagine | pixeli | Identificare casca dupa forma si aspect | 640x640 |
-| feature_2 | Imagine | pixeli | Identificare vesta/body de protectie dupa forma si aspect | 640x640 |
+
 
 **Fișier recomandat:**  `data/README.md`
 
@@ -134,11 +134,11 @@ project-name/
 
 ##  6. Stare Etapă (de completat de student)
 
-- [ ] Structură repository configurată
-- [ ] Dataset analizat (EDA realizată)
-- [ ] Date preprocesate
-- [ ] Seturi train/val/test generate
-- [ ] Documentație actualizată în README + `data/README.md`
+- [X] Structură repository configurată
+- [X] Dataset analizat (EDA realizată)
+- [X] Date preprocesate
+- [X] Seturi train/val/test generate
+- [X] Documentație actualizată în README + `data/README.md`
 
 ---
 
