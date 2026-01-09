@@ -28,6 +28,7 @@ Completați in acest readme tabelul următor cu **minimum 2-3 rânduri** care le
 |---------------------------|--------------------------------|--------------------------------|
 | Ex: Detectarea automată a fisurilor în suduri robotizate | Clasificare imagine radiografică → alertă operator în < 2 secunde | RN + Web Service 
 -------------------------------------------------------------------------
+**RASPUNS:**
 | Detectarea castilor de protectie in zonele unde este nevoie | Recunoaste castile de protectie | RN  |
 | Preventia accidententelor de munca | Recunoaste castile de protectie | 
 RN|
@@ -38,26 +39,31 @@ RN|
 ---
 ### 2. Contribuția Voastră Originală la Setul de Date – MINIM 40% din Totalul Observațiilor Finale
 **Regula generală:** Din totalul de **N observații finale** în `data/processed/`, **minimum 40%** trebuie să fie **contribuția voastră originală**.
+**RASPUNS:**
 Contribuția la Setul de Date:
 În cadrul acestui proiect, contribuția personală asupra setului de date final este de 100%. Deși imaginile brute (raw images) au fost colectate din surse publice (internet), acestea nu conțineau nicio informație semantică pre-existentă.
 Întregul proces de transformare a datelor brute într-un set de date compatibil cu algoritmul YOLO a fost realizat manual și integral de către mine. Acesta a inclus:
 1.	Curatorierea datelor: Selecția manuală a imaginilor relevante pentru a asigura varietatea scenariilor (unghiuri, luminozitate, ocluziuni).
 2.	Adnotarea (Labeling): Generarea manuală a tuturor etichetelor (bounding boxes) și a fișierelor de adnotare asociate, definind astfel „Ground Truth-ul” pentru antrenare.
 Astfel, setul de date din data/processed/ este rezultatul exclusiv al efortului propriu de procesare și etichetare.
-```
+
 #### Tipuri de contribuții acceptate (exemple din inginerie):
 Alegeți UNA sau MAI MULTE dintre variantele de mai jos și **demonstrați clar în repository**:
 
-| Tip contribuție: Curatoriere și Etichetare Manuală (Dataset Custom) | Exemple concrete: Selecția și filtrarea manuală a 100 de imagini din surse open-source; Adnotarea manuală integrală (bounding boxes) a tuturor imaginilor pentru crearea Ground Truth; Implementarea structurii de date (split 80/20) | Dovada minimă: Folderul dataset/ conținând structura images/labels, cele 100 de fișiere .txt generate manual și fișierul data.yaml |
+| Tip contribuție: Curatoriere și Etichetare Manuală (Dataset Custom) | Exemple concrete: Selecția și filtrarea manuală a 100 de imagini din surse open-source; Adnotarea manuală integrală (bounding boxes) a tuturor imaginilor pentru crearea Ground Truth; Implementarea structurii de date (split 70/15/15) | Dovada minimă: Folderul dataset/ conținând structura images/labels, cele 100 de fișiere .txt generate manual și fișierul data.yaml |
+```
 | **Tip contribuție** | **Exemple concrete din inginerie** | **Dovada minimă cerută** |
 |---------------------|-------------------------------------|--------------------------|
 | **Date generate prin simulare fizică** | • Traiectorii robot în Gazebo<br>• Vibrații motor cu zgomot aleator calibrat<br>• Consumuri energetice proces industrial simulat | Cod Python/LabVIEW funcțional + grafice comparative (simulat vs real din literatură) + justificare parametri |
 | **Date achiziționate cu senzori proprii** | • 500-2000 măsurători accelerometru pe motor<br>• 100-1000 imagini capturate cu cameră montată pe robot<br>• 200-1000 semnale GPS/IMU de pe platformă mobilă<br>• Temperaturi/presiuni procesate din Arduino/ESP32 | Foto setup experimental + CSV-uri produse + descriere protocol achiziție (frecvență, durata, condiții) |
+```
+Acest tip de contributie se potriveste pentru proiectul meu:
 | **Etichetare/adnotare manuală** | • Etichetat manual 1000+ imagini defecte sudură<br>• Anotat 500+ secvențe video cu comportamente robot<br>• Clasificat manual 2000+ semnale vibrații (normal/anomalie)<br>• Marcat manual 1500+ puncte de interes în planuri tehnice | Fișier Excel/JSON cu labels + capturi ecran tool etichetare + log timestamp-uri lucru |
+
 | **Date sintetice prin metode avansate** | • Simulări FEM/CFD pentru date dinamice proces | Cod implementare metodă + exemple before/after + justificare hiperparametri + validare pe subset real |
 #### Declarație obligatorie în README:
 Scrieți clar în acest README (Secțiunea 2):
-```markdown
+
 ### Contribuția originală la setul de date:
 
 Contributia originala la setul de date este in proportie cat se poate de mare a mea, eu am ales pozele de pe internet, (istockphoto.com), eu am pus marcajele necesare pe fiecare obiect in parte din fiecare poza cu ajutorul MakeSense.AI, tool care m-a ajutat in a imi exporta coordonatele de la “bounding boxes” (patratele cu care am inconjurat castile).
@@ -72,12 +78,12 @@ Contributia originala la setul de date este in proportie cat se poate de mare a 
 [Explicați în 2-3 paragrafe cum ați generat datele, ce metode ați folosit, 
 de ce sunt relevante pentru problema voastră, cu ce parametri ați rulat simularea/achiziția]
 Generarea și Procesarea Datelor Experimentale
-Pentru generarea setului de date inițial, am utilizat ca sursă primară platforma de generare și stocare istockphoto.ai, de unde am curariat manual o colecție de 100 de imagini de înaltă rezoluție. Procesul de achiziție nu a fost aleatoriu, ci a urmat o selecție riguroasă pentru a asigura variabilitatea vizuală a căștii de protecție (unghiuri de captură diferite, fundaluri complexe și condiții de iluminare variate). Această abordare a permis obținerea unor date de intrare de calitate superioară ("high-quality raw data"), esențiale pentru a compensa volumul redus al dataset-ului și pentru a oferi modelului trăsături clare pentru extragerea caracteristicilor.
+Pentru generarea setului de date inițial, am utilizat ca sursă primară platforma de generare și stocare istockphoto.ai, de unde am selectat manual o colecție de 100 de imagini relevante Procesul de achiziție nu a fost aleatoriu, ci a urmat o selecție riguroasă pentru a asigura variabilitatea vizuală a căștii de protecție (unghiuri de captură diferite, fundaluri complexe și condiții de iluminare variate, culori diferite). Această abordare a permis obținerea unor date de intrare de calitate superioară ("high-quality raw data"), esențiale pentru a compensa volumul redus al dataset-ului și pentru a oferi modelului trăsături clare pentru extragerea caracteristicilor.
 Metoda centrală utilizată pentru transformarea acestor imagini brute în date de antrenament a fost adnotarea manuală integrală (manual bounding box annotation), realizată cu ajutorul instrumentului online makesense.ai. Am generat „Ground Truth-ul” necesar algoritmului YOLO prin desenarea manuală a fiecărui contur și exportarea coordonatelor normalizate în format .txt. Această etapă reprezintă o contribuție originală 100%, garantând precizia localizării căștilor și eliminând erorile de etichetare frecvente în dataset-urile automate sau publice. Relevanța acestor date este critică pentru problemă, deoarece oferă un mediu controlat și curat pentru validarea conceptului, izolând performanța modelului de zgomotul etichetelor greșite.
-În ceea ce privește parametrii de simulare, am structurat setul de date utilizând o strategie de partiționare (Data Split) de 80/20, alocând aleatoriu 80% din imagini pentru faza de antrenare (Train) și 20% pentru evaluarea performanței (Validation). Această distribuție a fost aleasă pentru a maximiza capacitatea de învățare a modelului pe un set limitat, păstrând totodată un eșantion relevant statistic pentru verificarea capacității de generalizare și evitarea fenomenului de overfitting.
+În ceea ce privește parametrii de simulare, am structurat setul de date utilizând o strategie de partiționare (Data Split) de 70/15/15, alocând aleatoriu 70% din imagini pentru faza de antrenare (Train), 15% pentru evaluarea performanței (Validation) si 15% pentru testarea performantei (Test). Această distribuție a fost aleasă pentru a maximiza capacitatea de învățare a modelului pe un set limitat si pentru a mă incadra in standardul pentru proiect, păstrând totodată un eșantion relevant statistic pentru verificarea capacității de generalizare și evitarea fenomenului de overfitting.
 
 **Locația codului:** `src/data_acquisition/provenienta date (fisier txt)`
-**Locația datelor:** `data/raw/photos.zip + labels.zip(adnotarile puse cu bounding boxes)/`
+**Locația datelor:** `data/raw/dataset intreg.zip(imagini + adnotarile puse cu bounding boxes)/`
 **Dovezi:**
 - Grafic comparativ: `docs/generated_vs_real.png`
 - Setup experimental: `docs/acquisition_setup.jpg` (dacă aplicabil)
@@ -272,6 +278,7 @@ proiect-rn-[nume-prenume]/
 `"Etapa 4 completă - Arhitectură SIA funcțională"`
 **Tag obligatoriu:**  
 `git tag -a v0.4-architecture -m "Etapa 4 - Skeleton complet SIA"`
+
 
 
 
