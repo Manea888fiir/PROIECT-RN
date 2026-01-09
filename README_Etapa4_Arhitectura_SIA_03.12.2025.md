@@ -30,8 +30,7 @@ Completați in acest readme tabelul următor cu **minimum 2-3 rânduri** care le
 -------------------------------------------------------------------------
 **RASPUNS:**
 | Detectarea castilor de protectie in zonele unde este nevoie | Recunoaste castile de protectie | RN  |
-| Preventia accidententelor de munca | Recunoaste castile de protectie | 
-RN|
+| Preventia accidententelor de munca | Recunoaste castile de protectie | RN|
 **Instrucțiuni:**
 - Fiți concreti (nu vagi): "detectare fisuri sudură" ✓, "îmbunătățire proces" ✗
 - Specificați metrici măsurabile: "< 2 secunde", "> 95% acuratețe", "reducere 20%"
@@ -278,6 +277,7 @@ proiect-rn-[nume-prenume]/
 `"Etapa 4 completă - Arhitectură SIA funcțională"`
 **Tag obligatoriu:**  
 `git tag -a v0.4-architecture -m "Etapa 4 - Skeleton complet SIA"`
+
 
 
 
