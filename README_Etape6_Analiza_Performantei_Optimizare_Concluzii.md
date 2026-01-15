@@ -2,9 +2,9 @@
 
 **Disciplina:** Rețele Neuronale  
 **Instituție:** POLITEHNICA București – FIIR  
-**Student:** [Nume Prenume]  
-**Link Repository GitHub:** [URL complet]  
-**Data predării:** [Data]
+**Student:** Manea Ionut Florin
+**Link Repository GitHub:** [[URL complet]  ](https://github.com/Manea888fiir/PROIECT-RN)
+**Data predării:** 23.01.2026
 
 ---
 ## Scopul Etapei 6
@@ -699,3 +699,4 @@ Exemplu:
 ---
 
 **REMINDER:** Aceasta a fost ultima versiune pentru feedback. Următoarea predare este **VERSIUNEA FINALĂ PENTRU EXAMEN**!
+
