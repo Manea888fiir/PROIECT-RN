@@ -60,13 +60,13 @@ Deși Etapa 6 încheie ciclul formal de dezvoltare, **procesul iterativ continu�
 
 **Înainte de a începe Etapa 6, verificați că aveți din Etapa 5:**
 
-- [ ] **Model antrenat** salvat în `models/trained_model.h5` (sau `.pt`, `.lvmodel`)
+- [X] **Model antrenat** salvat în `models/trained_model.h5` (sau `.pt`, `.lvmodel`)
 - [ ] **Metrici baseline** raportate: Accuracy ≥65%, F1-score ≥0.60
-- [ ] **Tabel hiperparametri** cu justificări completat
-- [ ] **`results/training_history.csv`** cu toate epoch-urile
-- [ ] **UI funcțional** care încarcă modelul antrenat și face inferență reală
-- [ ] **Screenshot inferență** în `docs/screenshots/inference_real.png`
-- [ ] **State Machine** implementat conform definiției din Etapa 4
+- [X] **Tabel hiperparametri** cu justificări completat
+- [X] **`results/training_history.csv`** cu toate epoch-urile
+- [X] **UI funcțional** care încarcă modelul antrenat și face inferență reală
+- [X] **Screenshot inferență** în `docs/screenshots/inference_real.png`
+- [X] **State Machine** implementat conform definiției din Etapa 4
 
 **Dacă oricare din punctele de mai sus lipsește → reveniți la Etapa 5 înainte de a continua.**
 
@@ -699,4 +699,5 @@ Exemplu:
 ---
 
 **REMINDER:** Aceasta a fost ultima versiune pentru feedback. Următoarea predare este **VERSIUNEA FINALĂ PENTRU EXAMEN**!
+
 
