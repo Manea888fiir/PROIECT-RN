@@ -114,7 +114,7 @@ Pentru a justifica configurația finală, am efectuat o analiză comparativă î
 | **Exp 1** | Arhitectură: Nano → **Medium** (640px) | 0.81 | 0.79 | ~2.5 ore | Modelul mai complex învață mai bine trăsăturile, dar pixelii sunt insuficienți. |
 | **Exp 2** | Rezoluție: 640 → **1280px** (pe Nano) | 0.86 | 0.84 | ~3.0 ore | Rezoluția ajută mult, dar modelul Nano nu are capacitatea să proceseze toate detaliile fine. |
 | **Exp 3** | Combinat: **Medium + 1280px** | **0.96** | **0.96** | ~4.0 ore | **Performanță Maximă**. Sinergia dintre rezoluție și capacitatea modelului. |
-| **Exp 4** | + **Early Stopping** (Patience=5) | 0.96 | 0.96 | ~2.5 ore | **Configurația Finală**. Eficiență maximă: aceleași rezultate, dar timp redus cu 40%. |
+| **Exp 4** | + **Early Stopping** (Patience=5) | 0.96 | 0.96 | ~0.5 ore | **Configurația Finală**. Eficiență maximă: aceleași rezultate, dar timp redus cu 40%. |
 
 **Justificare alegere configurație finală:**
 
@@ -797,6 +797,7 @@ Exemplu:
 ---
 
 **REMINDER:** Aceasta a fost ultima versiune pentru feedback. Următoarea predare este **VERSIUNEA FINALĂ PENTRU EXAMEN**!
+
 
 
 
