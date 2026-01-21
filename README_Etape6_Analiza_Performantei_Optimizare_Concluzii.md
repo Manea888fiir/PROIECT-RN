@@ -193,27 +193,31 @@ Cea mai importantă modificare software implementată în Etapa 6 este **decupla
    - Test complet: input → preprocess → inference → decision → output
    - Timp total: [X] ms (vs [Y] ms în Etapa 5)
 ```
+### Modificări concrete aduse în Etapa 6:
+
+1. **Model înlocuit:** `yolov8n.pt` (Nano) → `best.pt` (Medium, antrenat la 1280px)
+   - **Îmbunătățire:** Accuracy (mAP) a crescut de la **72% la 96.1%**, iar F1-score de la **0.68 la 0.95**.
+   - **Motivație:** Modelul Nano era incapabil să detecteze căștile la distanță (obiecte mici). Modelul Medium, antrenat la rezoluție înaltă, a învățat trăsăturile fine, eliminând aproape total erorile de omisiune (False Negatives), esențial pentru un sistem de siguranță.
+
+2. **Logică de Procesare (Pipeline) actualizată:**
+   - **Metodă inferență:** Trecere de la `model.predict()` (cadru individual) la `model.track()` (urmărire temporală cu **ByteTrack**).
+   - **Gestionare Rezoluție:** Implementarea strategiei hibride: Antrenare la **1280px** (pentru învățare detalii) → Inferență forțată la **640px** (pentru viteză).
+   - **Parametrizare:** Înlocuirea pragului fix (hardcoded) cu variabile dinamice controlabile din interfață (`conf_threshold`).
+
+3. **UI îmbunătățit (Streamlit):**
+   - **Controale Noi:** Adăugarea unui **Sidebar** cu slider pentru ajustarea sensibilității în timp real (0.0 - 1.0).
+   - **Feedback Vizual:** Implementarea afișajului FPS în timp real și a box-urilor colorate (Verde) direct pe fluxul video procesat.
+   - **Screenshot:** `docs/screenshots/ui_final_v2.png`
+
+4. **Pipeline end-to-end re-testat:**
+   - **Flux complet:** Video Input (Webcam/File) → Resize (640px) → Inference (Medium) → Tracking (Update ID) → Draw Bounding Box → UI Display.
+   - **Timp total procesare:** **28 ms/frame** (stabil), comparativ cu **48-50 ms** (fluctuant) în Etapa 5, asigurând un framerate constant de ~35 FPS pe hardware-ul de test.
 
 ### Diagrama State Machine Actualizată (dacă s-au făcut modificări)
 
 Dacă ați modificat State Machine-ul în Etapa 6, includeți diagrama actualizată în `docs/state_machine_v2.png` și explicați diferențele:
 
-```
-Exemplu modificări State Machine pentru Etapa 6:
 
-ÎNAINTE (Etapa 5):
-PREPROCESS → RN_INFERENCE → THRESHOLD_CHECK (0.5) → ALERT/NORMAL
-
-DUPĂ (Etapa 6):
-PREPROCESS → RN_INFERENCE → CONFIDENCE_FILTER (>0.6) → 
-  ├─ [High confidence] → THRESHOLD_CHECK (0.35) → ALERT/NORMAL
-  └─ [Low confidence] → REQUEST_HUMAN_REVIEW → LOG_UNCERTAIN
-
-Motivație: Predicțiile cu confidence <0.6 sunt trimise pentru review uman,
-           reducând riscul de decizii automate greșite în mediul industrial.
-```
-
----
 
 ## 2. Analiza Detaliată a Performanței
 
@@ -797,6 +801,7 @@ Exemplu:
 ---
 
 **REMINDER:** Aceasta a fost ultima versiune pentru feedback. Următoarea predare este **VERSIUNEA FINALĂ PENTRU EXAMEN**!
+
 
 
 
