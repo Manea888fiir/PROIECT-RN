@@ -103,9 +103,8 @@ Documentați **minimum 4 experimente** cu variații sistematice:
 | Exp 4 | Dropout 0.3 → 0.5 | 0.73 | 0.69 | 16 min | Reduce overfitting |
 | Exp 5 | Augmentări domeniu (zgomot gaussian) | 0.78 | 0.75 | 25 min | **BEST** - ales pentru final |
 
-### 3.4. Experimente și Variații Sistematice
 
-### 3.4. Experimente și Variații Sistematice
+###  Experimente și Variații Sistematice
 
 Pentru a justifica configurația finală, am efectuat o analiză comparativă în 4 etape, izolând variabilele cheie: dimensiunea modelului și rezoluția de intrare.
 
@@ -260,7 +259,6 @@ Selectați și analizați **minimum 5 exemple greșite** de pe test set:
 
 **Analiză detaliată per exemplu (scrieți pentru fiecare):**
 
-**Atasez poza in repository, nu exista greseli in datasetul meu.**
 
 | **Index** | **True Label** | **Predicted** | **Confidence** | **Cauză probabilă** | **Soluție propusă** |
 |-----------|----------------|---------------|----------------|---------------------|---------------------|
@@ -375,10 +373,10 @@ Acest tabel centralizează evoluția performanței sistemului de-a lungul celor 
 
 Salvați în `docs/results/`:
 
-- [ ] `confusion_matrix_optimized.png` - Confusion matrix model final
-- [ ] `learning_curves_final.png` - Loss și accuracy vs. epochs
-- [ ] `metrics_evolution.png` - Evoluție metrici Etapa 4 → 5 → 6
-- [ ] `example_predictions.png` - Grid cu 9+ exemple (correct + greșite)
+- [x] `confusion_matrix_optimized.png` - Confusion matrix model final
+- [x] `learning_curves_final.png` - Loss și accuracy vs. epochs
+- [x] `metrics_evolution.png` - Evoluție metrici Etapa 4 → 5 → 6
+- [x] `example_predictions.png` - Grid cu 9+ exemple (correct + greșite)
 
 ---
 
@@ -394,10 +392,10 @@ Salvați în `docs/results/`:
 **Obiective atinse:**
 - [ ] Model RN funcțional cu accuracy [X]% pe test set
 - [ ] Integrare completă în aplicație software (3 module)
-- [ ] State Machine implementat și actualizat
+- [X] State Machine implementat și actualizat
 - [ ] Pipeline end-to-end testat și documentat
-- [ ] UI demonstrativ cu inferență reală
-- [ ] Documentație completă pe toate etapele
+- [X] UI demonstrativ cu inferență reală
+- [X] Documentație completă pe toate etapele
 
 **Obiective parțial atinse:**
 - [ ] [Descrieți ce nu a funcționat perfect - ex: accuracy sub target pentru clasa X]
@@ -406,43 +404,77 @@ Salvați în `docs/results/`:
 - [ ] [Descrieți ce nu s-a realizat - ex: deployment în cloud, optimizare NPU]
 ```
 
-### 5.2 Limitări Identificate
+### 5.1. Evaluarea Performanței Finale
 
-```markdown
-### Limitări tehnice ale sistemului
+### Evaluare sintetică a proiectului
 
-1. **Limitări date:**
-   - [ex: Dataset dezechilibrat - clasa 'defect_mare' are doar 8% din total]
-   - [ex: Date colectate doar în condiții de iluminare ideală]
+Prezenta lucrare a atins majoritatea obiectivelor propuse, reușind să livreze un prototip funcțional capabil să monitorizeze purtarea echipamentului de protecție în timp real.
 
-2. **Limitări model:**
-   - [ex: Performanță scăzută pe imagini cu reflexii metalice]
-   - [ex: Generalizare slabă pe tipuri de defecte nevăzute în training]
+**Obiective atinse:**
+- [x] **Model RN performant:** Obținerea unei acuratețe (mAP@50) de **96.1%**, depășind semnificativ pragul industrial propus de 85%.
+- [x] **Optimizare Video Real-Time:** Atingerea unei latențe de procesare de **28ms (~35 FPS)** prin implementarea strategiei hibride (Antrenare 1280px / Inferență 640px).
+- [x] **Integrare Tracking:** Implementarea algoritmului **ByteTrack** pentru a menține consistența ID-urilor muncitorilor între cadrele video consecutive.
+- [x] **Pipeline End-to-End:** Realizarea completă a fluxului: Colectare Date → Adnotare → Antrenare (Google Colab) → Evaluare → Implementare Aplicație.
+- [x] **Interfață Utilizator (UI):** Dezvoltarea unei aplicații grafice care permite vizualizarea detecțiilor și ajustarea dinamică a pragului de confidență.
+- [x] **Documentație Tehnică:** Analiza comparativă a experimentelor și justificarea deciziilor arhitecturale (YOLOv8 Medium vs Nano).
 
-3. **Limitări infrastructură:**
-   - [ex: Latență de 35ms insuficientă pentru linie producție 60 piese/min]
-   - [ex: Model prea mare pentru deployment pe edge device]
+**Obiective parțial atinse:**
+- [ ] **Robustete la condiții extreme de iluminare:** Deși modelul performează excelent în condiții normale și de umbră, s-a observat o scădere a capacității de detecție în cazul **reflexiilor speculare puternice** (casca foarte lucioasă în soare), necesitând o augmentare specifică a datelor.
+- [ ] **Validare în scenarii meteo adverse:** Sistemul a fost testat preponderent pe imagini clare; nu există date suficiente pentru a certifica funcționarea pe timp de ceață densă sau ploaie torențială.
 
-4. **Limitări validare:**
-   - [ex: Test set nu acoperă toate condițiile din producție reală]
-```
+**Obiective neatinse (Planificate pentru viitor):**
+- [ ] **Deployment pe sisteme Embedded:** Rularea modelului pe un dispozitiv Edge dedicat (ex: Raspberry Pi sau NVIDIA Jetson) nu a fost realizată în această fază, soluția depinzând de un PC/Laptop.
+- [ ] **Extindere Multi-Clasă:** Proiectul s-a limitat la detecția căștii ("casca"), fără a include alte elemente de protecție (vestă, mănuși), care au rămas propuse pentru dezvoltări ulterioare.
 
-### 5.3 Direcții de Cercetare și Dezvoltare
 
-```markdown
-### Direcții viitoare de dezvoltare
+### 5.2. Limitări Identificate
 
-**Pe termen scurt (1-3 luni):**
-1. Colectare [X] date adiționale pentru clasa minoritară
-2. Implementare [tehnica Y] pentru îmbunătățire recall
-3. Optimizare latență prin [metoda Z]
-...
+Deși rezultatele experimentale indică o performanță ridicată (mAP 96.1%), analiza calitativă a scos la iveală o serie de limitări tehnice și operaționale care trebuie adresate într-o etapă viitoare de dezvoltare.
 
-**Pe termen mediu (3-6 luni):**
-1. Integrare cu sistem SCADA din producție
-2. Deployment pe [platform edge - ex: Jetson, NPU]
-3. Implementare monitoring MLOps (drift detection)
-...
+1. **Limitări ale Datelor (Dataset):**
+   - **Lipsa scenariilor de iluminare extremă:** Setul de date actual este predominant echilibrat din punct de vedere al luminozității. Nu conține suficiente exemple cu **reflexii speculare puternice** (glare) sau supraexpunere, ceea ce duce la omisiuni ocazionale (False Negatives) atunci când lumina se reflectă direct din casca lucioasă.
+   - **Unghiuri limitate:** Majoritatea imaginilor sunt colectate de la nivelul ochilor sau ușor de sus (CCTV). Sistemul nu a fost validat extensiv pe unghiuri atipice (ex: vedere verticală "Top-Down" de pe o macara).
+
+2. **Limitări ale Modelului (Algoritmice):**
+   - **Sensibilitate la suprafețe reflectorizante:** Așa cum s-a observat în analiza erorilor, modelul tinde să piardă trăsăturile de textură ale căștii atunci când aceasta devine o sursă de reflexie puternică, confundând-o cu o sursă de lumină sau un artefact.
+   - **Dependența de context:** În cazuri rare de ocluzie severă (>70%), modelul are dificultăți în a infera prezența căștii dacă nu vede și o parte din corpul muncitorului (contextul semantic).
+
+3. **Limitări de Infrastructură:**
+   - **Dependența de Hardware Generalist:** Soluția actuală rulează pe un Laptop/PC cu GPU dedicat. Nu este încă optimizată (cuantezată la FP16/INT8) pentru a rula pe dispozitive **Edge AI** (ex: Raspberry Pi, NVIDIA Jetson) care ar putea fi montate autonom pe șantier.
+   - **Consumul de resurse:** Deși latența este bună (28ms), rularea continuă a unui model Medium solicită intens GPU-ul, generând un consum energetic ridicat, problematic pentru soluțiile pe baterii.
+
+4. **Limitări de Validare:**
+   - **Lipsa condițiilor meteo adverse:** Testele au fost efectuate pe imagini clare. Nu s-a validat performanța în condiții de ploaie densă, ceață, ninsoare sau pe timp de noapte (mod IR/Night Vision), scenarii frecvente pe un șantier real.
+
+
+### 5.3. Direcții viitoare de dezvoltare
+
+
+**Pe termen scurt (1-3 luni) - Optimizare și Robustete:**
+
+1.  **Rezolvarea limitărilor cauzate de reflexii (Specular Reflection):**
+    * Colectarea unui set de date suplimentar (cca. 200 imagini) axat exclusiv pe căști foarte luminoase, filmate în soare puternic sau sub surse de lumină directă.
+    * Re-antrenarea modelului folosind augmentări specifice de intensitate: `RandomBrightness`, `CLAHE` (Contrast Limited Adaptive Histogram Equalization) și `Solarize` pentru a învăța rețeaua să nu ignore zonele supraexpuse.
+
+2.  **Optimizare pentru inferență accelerată (TensorRT):**
+    * Conversia modelului din formatul standard PyTorch (`.pt`) în **TensorRT** (pentru plăci NVIDIA) sau **OpenVINO** (pentru procesoare Intel).
+    * Această conversie poate reduce latența de la 28ms la sub 15ms, permițând rularea algoritmului pe fluxuri video cu framerate ridicat (60 FPS).
+
+3.  **Implementarea buclei de feedback (Active Learning):**
+    * Dezvoltarea unei funcționalități în interfața grafică care să permită operatorului să marcheze cu un click detecțiile greșite (ex: când modelul ratează o cască). Aceste imagini vor fi salvate automat pentru re-antrenare periodică.
+
+**Pe termen mediu (3-6 luni) - Industrializare și Hardware:**
+
+1.  **Migrarea pe dispozitive Edge AI (Embedded):**
+    * Portarea aplicației de pe laptop/PC pe dispozitive dedicate, eficiente energetic, precum **NVIDIA Jetson Orin Nano** sau **Raspberry Pi 5 + Hailo AI Kit**.
+    * Acest pas este esențial pentru instalarea camerelor autonome în zonele izolate ale șantierului, fără a depinde de un server central.
+
+2.  **Extinderea la detecția Echipamentului Complet (Full PPE):**
+    * Evoluția de la Single-Class ("casca") la Multi-Class, prin adăugarea detecției pentru: **Veste reflectorizante, Mănuși de protecție și Bocanci**.
+    * Corelarea logică a claselor (ex: "Are cască DAR nu are vestă" → Alertă Nivel 2).
+
+3.  **Integrarea IoT și Alerte Fizice:**
+    * Conectarea sistemului software cu module de automatizare (ex: protocol MQTT) pentru a declanșa acțiuni fizice: aprinderea unui girofar roșu sau blocarea turnicheților de acces în șantier dacă echipamentul nu este detectat.
 
 ```
 
@@ -465,6 +497,22 @@ Salvați în `docs/results/`:
 1. [ex: Feedback de la experți domeniu a ghidat selecția features]
 2. [ex: Code review a identificat bug-uri în pipeline preprocesare]
 ```
+### 5.4. Lecții Învățate
+
+Dezvoltarea acestui proiect a reprezentat o oportunitate de a transpune cunoștințele teoretice într-o aplicație practică, generând o serie de lecții valoroase atât pe plan tehnic, cât și metodologic.
+
+**Lecții Tehnice:**
+1.  **Importanța Rezoluției în Computer Vision:** Am demonstrat experimental că pentru detecția obiectelor mici la distanță, creșterea rezoluției de intrare (de la 640px la 1280px) este mult mai eficientă decât simpla schimbare a arhitecturii modelului.
+2.  **Eficiența Transfer Learning:** Utilizarea arhitecturii YOLOv8 pre-antrenate a redus timpul de dezvoltare de la săptămâni la ore, permițând concentrarea efortului pe rafinarea dataset-ului specific ("casca") în loc de proiectarea rețelei de la zero.
+3.  **Gestionarea Resurselor Hardware (Cloud vs Local):** Am învățat să optimizez fluxul de lucru prin utilizarea **Google Colab (GPU T4)** pentru etapa intensivă de antrenare și a mediului local (**Visual Studio Code**) pentru dezvoltarea aplicației și inferență, economisind timp și resurse computaționale.
+
+**Lecții de Proces (Metodologie):**
+1.  **Abordarea "Data-Centric AI":** Cele mai mari salturi în performanță (de la 72% la 96%) nu au venit din scrierea de cod complex, ci din curățarea datelor, verificarea etichetelor și alegerea corectă a strategiilor de augmentare.
+2.  **Iterația Experimentală:** Am înțeles că o rețea neuronală nu se configurează "perfect" din prima încercare. Procesul de monitorizare a curbelor de învățare (Loss vs Epochs) și ajustarea parametrilor (Batch Size, LR) pe baza graficelor a fost esențial pentru evitarea overfitting-ului.
+3.  **Modularizarea Proiectului:** Organizarea codului în module distincte (antrenare, validare, interfață grafică) în mediul Python a simplificat depanarea (debugging) și a permis integrarea rapidă a noilor versiuni de model (`best.pt`) fără a rescrie aplicația principală.
+
+**Dezvoltare Personală:**
+1.  **Înțelegerea "Black Box-ului":** Proiectul a clarificat concepte abstracte despre funcționarea rețelelor neuronale (cum se propagă eroarea, cum influențează learning rate-ul convergența), transformând "magia" AI-ului într-un proces ingineresc controlabil.
 
 ### 5.5 Plan Post-Feedback (ULTIMA ITERAȚIE ÎNAINTE DE EXAMEN)
 
@@ -749,6 +797,7 @@ Exemplu:
 ---
 
 **REMINDER:** Aceasta a fost ultima versiune pentru feedback. Următoarea predare este **VERSIUNEA FINALĂ PENTRU EXAMEN**!
+
 
 
 
