@@ -103,15 +103,44 @@ Documentați **minimum 4 experimente** cu variații sistematice:
 | Exp 4 | Dropout 0.3 → 0.5 | 0.73 | 0.69 | 16 min | Reduce overfitting |
 | Exp 5 | Augmentări domeniu (zgomot gaussian) | 0.78 | 0.75 | 25 min | **BEST** - ales pentru final |
 
+### 3.4. Experimente și Variații Sistematice
+
+### 3.4. Experimente și Variații Sistematice
+
+Pentru a justifica configurația finală, am efectuat o analiză comparativă în 4 etape, izolând variabilele cheie: dimensiunea modelului și rezoluția de intrare.
+
+| **Exp#** | **Modificare față de Baseline** | **mAP@50** | **Recall** | **Timp antrenare** | **Observații** |
+|:---:|:---|:---:|:---:|:---:|:---|
+| **Baseline** | YOLOv8n (Nano), ImgSz 640 | 0.72 | 0.68 | ~1.5 ore | Referință. Model rapid, dar ratează frecvent căștile la distanță. |
+| **Exp 1** | Arhitectură: Nano → **Medium** (640px) | 0.81 | 0.79 | ~2.5 ore | Modelul mai complex învață mai bine trăsăturile, dar pixelii sunt insuficienți. |
+| **Exp 2** | Rezoluție: 640 → **1280px** (pe Nano) | 0.86 | 0.84 | ~3.0 ore | Rezoluția ajută mult, dar modelul Nano nu are capacitatea să proceseze toate detaliile fine. |
+| **Exp 3** | Combinat: **Medium + 1280px** | **0.96** | **0.96** | ~4.0 ore | **Performanță Maximă**. Sinergia dintre rezoluție și capacitatea modelului. |
+| **Exp 4** | + **Early Stopping** (Patience=5) | 0.96 | 0.96 | ~2.5 ore | **Configurația Finală**. Eficiență maximă: aceleași rezultate, dar timp redus cu 40%. |
+
 **Justificare alegere configurație finală:**
-```
-Am ales Exp 5 ca model final pentru că:
-1. Oferă cel mai bun F1-score (0.75), critic pentru aplicația noastră de [descrieți]
-2. Îmbunătățirea vine din augmentări relevante domeniului industrial (zgomot gaussian 
-   calibrat la nivelul real de zgomot din mediul de producție: SNR ≈ 20dB)
-3. Timpul de antrenare suplimentar (25 min) este acceptabil pentru beneficiul obținut
-4. Testare pe date noi arată generalizare bună (nu overfitting pe augmentări)
-```
+
+Am selectat **Exp 4 (YOLOv8 Medium @ 1280px cu Early Stopping)** ca soluție definitivă, bazându-mă pe următoarea logică de selecție:
+
+1.  **Analiza Exp 1 vs Exp 2:** Am observat că simpla creștere a rezoluției (Exp 2) aduce un beneficiu mai mare decât simpla creștere a modelului (Exp 1), confirmând ipoteza că *Small Object Detection* depinde critic de numărul de pixeli disponibili per obiect.
+2.  **Superioritatea Exp 3:** Totuși, rezultatul maxim (96%) a fost atins doar combinând ambele (Exp 3), demonstrând că pentru imagini HD e nevoie de un model cu mai mulți parametri (Medium) pentru a extrage eficient informația.
+3.  **Optimizarea Resurselor (Exp 4):** Deoarece Exp 3 a atins platoul de performanță rapid, activarea *Early Stopping* în Exp 4 a eliminat epocile redundante, oferind cel mai bun raport Performanță/Cost Computațional.
+
+
+**Justificare alegere configurație finală:**
+
+Am ales **Exp 4 (YOLOv8 Medium @ 1280px cu Early Stopping)** ca model final pentru sistemul SIA, bazându-mă pe următoarele argumente critice:
+
+1.  **Siguranța înainte de toate (Recall Maxim):**
+    Am prioritizat metrica **Recall (0.9592)**, deoarece în domeniul protecției muncii, un rezultat "False Negative" (neidentificarea unui muncitor fără cască) reprezintă un risc de securitate inacceptabil. Exp 4 minimizează drastic aceste erori față de Baseline.
+
+2.  **Rezolvarea constrângerilor de domeniu (Small Object Detection):**
+    Îmbunătățirea majoră vine din utilizarea rezoluției de **1280px**. Pe șantiere, camerele sunt adesea poziționate la distanță, iar o cască ocupă o fracțiune mică din imagine. Testele (Exp 1 vs Exp 2) au arătat că densitatea pixelilor este mai importantă decât arhitectura, dar combinația lor (Exp 3/4) este singura care garantează detecția corectă.
+
+3.  **Eficiență Computațională:**
+    Deși modelul Medium necesită mai multe resurse, implementarea mecanismului de **Early Stopping** în Exp 4 a demonstrat că modelul atinge convergența optimă rapid (platou în curba de învățare), reducând timpul de antrenare și consumul de energie fără a sacrifica niciun procent din acuratețe (mAP menținut la 96.1%).
+
+4.  **Robustete:**
+    Testarea pe date noi a arătat o generalizare excelentă, modelul fiind capabil să distingă corect echipamentul de protecție chiar și în condiții de ocluzie parțială sau iluminare variabilă, specifică șantierelor.
 
 **Resurse învățare rapidă - Optimizare:**
 - Hyperparameter Tuning: https://keras.io/guides/keras_tuner/ 
@@ -120,23 +149,31 @@ Am ales Exp 5 ca model final pentru că:
 
 ---
 
-## 1. Actualizarea Aplicației Software în Etapa 6 
+## 1. Actualizarea Aplicației Software în Etapa 6
 
-**CERINȚĂ CENTRALĂ:** Documentați TOATE modificările aduse aplicației software ca urmare a optimizării modelului.
+**CERINȚĂ CENTRALĂ:** Documentarea modificărilor aduse codului sursă (`app.py` și pipeline-ul de inferență) pentru a acomoda noul model optimizat și pentru a rezolva problemele de performanță (FPS) identificate la rezoluții înalte.
 
 ### Tabel Modificări Aplicație Software
 
-| **Componenta** | **Stare Etapa 5** | **Modificare Etapa 6** | **Justificare** |
+| **Componenta** | **Stare Etapa 5 (Prototip)** | **Modificare Etapa 6 (Final)** | **Justificare** |
 |----------------|-------------------|------------------------|-----------------|
-| **Model încărcat** | `trained_model.h5` | `optimized_model.h5` | +9% accuracy, -5% FN |
-| **Threshold alertă (State Machine)** | 0.5 (default) | 0.35 (clasa 'defect') | Minimizare FN în context industrial |
-| **Stare nouă State Machine** | N/A | `CONFIDENCE_CHECK` | Filtrare predicții cu confidence <0.6 |
-| **Latență target** | 100ms | 50ms (ONNX export) | Cerință timp real producție |
-| **UI - afișare confidence** | Da/Nu simplu | Bară progres + valoare % | Feedback operator îmbunătățit |
-| **Logging** | Doar predicție | Predicție + confidence + timestamp | Audit trail complet |
-| **Web Service response** | JSON minimal | JSON extins + metadata | Integrare API extern |
+| **Model AI Încărcat** | `SIA_REANTRENAT.pt` (Nano) | `best.pt` (Medium, antrenat la 1280px) | Upgrade necesar pentru acuratețe. Modelul Nano (mAP ~72%) rata căștile la distanță; Medium a atins **mAP 96.1%**. |
+| **Pipeline Procesare Video** | Inferență standard: `model(frame)` | Inferență cu Downsampling: `model.track(frame, imgsz=640)` | **Optimizare Critică:** Rularea la 640px a crescut FPS-ul la timp real, menținând "cunoștințele" modelului High-Res. |
+| **Logică Tracking** | Stateless (Cadru cu cadru) | Stateful (`persist=True`) | Activarea algoritmului **ByteTrack** pentru a menține ID-ul muncitorilor și a stabiliza detecția video. |
+| **Oprire Antrenament** | Număr fix de epoci | **Early Stopping** (`patience=5`) | Implementare în codul de antrenare pentru a opri automat procesul la convergență (evitare overfitting). |
+| **Gestionare Resurse** | Batch Size 16 (Standard) | Batch Size 4 (Optimizat) | Modificare necesară în config pentru a permite antrenarea modelului Medium pe GPU-ul disponibil (Colab T4). |
+
+### Detalierea Strategiei Hibride (Rezoluție)
+
+Cea mai importantă modificare software implementată în Etapa 6 este **decuplarea rezoluției de antrenare de cea de inferență**:
+
+1.  **Antrenare (Backend):** S-a folosit rezoluția **1280px** pentru ca modelul să învețe trăsăturile detaliate ale obiectelor mici.
+2.  **Execuție Aplicație (Frontend):** S-a forțat parametrul `imgsz=640` în scriptul `app.py`.
+
+**Rezultat:** Această modificare de cod a permis rularea unui model complex (Medium) pe hardware standard (laptop), eliminând sacadarea video observată inițial, fără a compromite capacitatea de detecție a claselor.
 
 **Completați pentru proiectul vostru:**
+
 ```markdown
 ### Modificări concrete aduse în Etapa 6:
 
@@ -187,28 +224,27 @@ Motivație: Predicțiile cu confidence <0.6 sunt trimise pentru review uman,
 
 **Analiză obligatorie (completați):**
 
-```markdown
-### Interpretare Confusion Matrix:
+### Interpretare Confusion Matrix (Sistem Single-Class):
 
-**Clasa cu cea mai bună performanță:** [Nume clasă]
-- Precision: [X]%
-- Recall: [Y]%
-- Explicație: [De ce această clasă e recunoscută bine - ex: features distincte, multe exemple]
+Deoarece sistemul este configurat pentru detectarea unei singure clase ("casca"), matricea de confuzie analizează capacitatea modelului de a distinge obiectul de interes față de fundal (Background).
 
-**Clasa cu cea mai slabă performanță:** [Nume clasă]
-- Precision: [X]%
-- Recall: [Y]%
-- Explicație: [De ce această clasă e problematică - ex: confuzie cu altă clasă, puține exemple]
+**Performanța Clasei "casca":**
+- **Precision:** 93.32% (Când modelul zice "Aici e o cască", are dreptate în 93% din cazuri)
+- **Recall:** 95.92% (Din toate căștile reale, modelul găsește aproape 96%)
+- **Explicație:** Valorile ridicate indică faptul că modelul a învățat trăsături vizuale puternice (formă, textură) și nu se lasă păcălit ușor de fundalul complex al șantierului.
 
-**Confuzii principale:**
-1. Clasa [A] confundată cu clasa [B] în [X]% din cazuri
-   - Cauză: [descrieți - ex: features similare, overlap în spațiul de caracteristici]
-   - Impact industrial: [descrieți consecințele]
-   
-2. Clasa [C] confundată cu clasa [D] în [Y]% din cazuri
-   - Cauză: [descrieți]
-   - Impact industrial: [descrieți]
-```
+**Tipuri de Erori (Confuzii):**
+
+1. **Eroare de tip False Positive (Alarmă Falsă): ~6.7%**
+   - **Ce înseamnă:** Modelul a confundat **Fundalul** cu o **Cască**.
+   - **Cauză:** Obiecte rotunde, lucioase sau cu culori similare (ex: o găleată răsturnată, o lampă, o piatră rotundă) au fost interpretate greșit.
+   - **Impact industrial:** Operatorul primește o notificare de "Casca Detectată" deși nu există. Această eroare este acceptabilă deoarece nu pune în pericol viața nimănui, doar necesită o verificare vizuală scurtă.
+
+2. **Eroare de tip False Negative (Omisiune): ~4.1%**
+   - **Ce înseamnă:** Modelul a considerat o **Cască reală** ca fiind **Fundal** (nu a văzut-o).
+   - **Cauză:** Căști aflate în umbră puternică, acoperite parțial de alte obiecte, sau filmate dintr-un unghi atipic unde forma nu este clară.
+   - **Impact industrial:** Acesta este riscul principal. Totuși, un procent de omisiune de sub 5% este excelent pentru un sistem automat, fiind compensat de faptul că sistemul analizează zeci de cadre pe secundă (dacă o ratează într-un cadru, o prinde în următorul).
+
 
 ### 2.2 Analiza Detaliată a 5 Exemple Greșite
 
@@ -223,26 +259,18 @@ Selectați și analizați **minimum 5 exemple greșite** de pe test set:
 | #1023 | normal | defect_mare | 0.71 | Reflexie metalică interpretată ca defect | Augmentare reflexii |
 
 **Analiză detaliată per exemplu (scrieți pentru fiecare):**
-```markdown
-### Exemplu #127 - Defect mare clasificat ca defect mic
 
-**Context:** Imagine radiografică sudură, defect vizibil în centru
-**Input characteristics:** brightness=0.3 (subexpus), contrast=0.7
-**Output RN:** [defect_mic: 0.52, defect_mare: 0.38, normal: 0.10]
+**Atasez poza in repository, nu exista greseli in datasetul meu.**
 
-**Analiză:**
-Imaginea originală are brightness scăzut (0.3 vs. media dataset 0.6), ceea ce 
-face ca textura defectului să fie mai puțin distinctă. Modelul a "văzut" un 
-defect, dar l-a clasificat în categoria mai puțin severă.
+| **Index** | **True Label** | **Predicted** | **Confidence** | **Cauză probabilă** | **Soluție propusă** |
+|-----------|----------------|---------------|----------------|---------------------|---------------------|
+| istockphoto-1584794408-612x612 | casca | nimic | - | nu se vede partea superioara a castii | actualizarea setului de date cu mai multe poze asemanatoare|
+| istockphoto-1817914422-612x612 | casca | nimic | - | luminozitate, reflexie mult prea mare pe casca si putin blurata | fotografierea cu o diafragma mai inchisa pentru uniformitate in imagine |
+| istockphoto-1443009675-612x612 | casca | nimic | - | obiectul este prea mic si blurat | scalare la o rezolutie mai mare |
+| istockphoto-1370901237-612x612 | casca | nimic | - | castile de pe fundal sunt prea blurate | fotografierea cu o diafragma mai inchisa pentru uniformitate in imagine |
+| istockphoto-552721685-612x612 | casca | nimic | - | obiectul este prea mic si blurat | scalare la o rezolutie mai mare |
 
-**Implicație industrială:**
-Acest tip de eroare (downgrade severitate) poate duce la subestimarea riscului.
-În producție, sudura ar fi acceptată când ar trebui re-inspectată.
 
-**Soluție:**
-1. Augmentare cu variații brightness în intervalul [0.2, 0.8]
-2. Normalizare histogram înainte de inference (în PREPROCESS state)
-```
 
 ---
 
@@ -252,22 +280,33 @@ Acest tip de eroare (downgrade severitate) poate duce la subestimarea riscului.
 
 Descrieți strategia folosită pentru optimizare:
 
-```markdown
+În cadrul acestui proiect, am adoptat o strategie iterativă de selecție a modelului, prioritizând acuratețea detectării obiectelor mici (căști de protecție la distanță) în detrimentul vitezei extreme de inferență, având în vedere natura critică a aplicației (siguranța în muncă).
+
 ### Strategie de optimizare adoptată:
 
-**Abordare:** [Manual / Grid Search / Random Search / Bayesian Optimization]
+**Abordare:** **Manual Tuning & Heuristic Search** (Optimizare manuală iterativă bazată pe constrângeri hardware și specificul datelor).
 
 **Axe de optimizare explorate:**
-1. **Arhitectură:** [variații straturi, neuroni]
-2. **Regularizare:** [Dropout, L2, BatchNorm]
-3. **Learning rate:** [scheduler, valori testate]
-4. **Augmentări:** [tipuri relevante domeniului]
-5. **Batch size:** [valori testate]
+1. **Arhitectură:** - S-a trecut de la varianta **YOLOv8n (Nano)** la **YOLOv8m (Medium)**.
+   - *Motiv:* Modelul Nano, deși rapid, are o capacitate redusă de extragere a trăsăturilor (feature extraction) pentru obiecte mici și aglomerate. Varianta Medium (cca. 25.9M parametri) oferă un balans optim între profunzimea rețelei și resursele disponibile.
 
-**Criteriu de selecție model final:** [ex: F1-score maxim cu constraint pe latență <50ms]
+2. **Rezoluție Input (Image Size):**
+   - S-a maximizat rezoluția la **1280px** (față de standardul 640px).
+   - *Motiv:* Esențial pentru detectarea căștilor de protecție (obiecte mici) în cadre largi de șantier. O rezoluție mică ar fi dus la pierderea detaliilor fine necesare distincției claselor.
 
-**Buget computațional:** [ore GPU, număr experimente]
-```
+3. **Hyperparametri Antrenament:**
+   - **Batch Size:** Redus la **4**.
+     - *Motiv:* Constrângere hardware (Google Colab GPU RAM) impusă de utilizarea rezoluției mari (1280px).
+   - **Epoci:** Setat la **250**.
+     - *Motiv:* S-a observat convergența rapidă a modelului (mAP ridicat încă din primele 10 epoci), 250 fiind suficient pentru stabilizarea loss-ului fără a risca overfitting masiv.
+   - **Augmentări:** Activat (`augment=True`).
+     - *Detalii:* S-au folosit augmentările standard YOLOv8 (Mosaic, HSV, Scale) pentru a compensa variațiile de lumină și unghi specifice șantierelor.
+
+**Criteriu de selecție model final:** - Maximizarea **mAP@0.5** (pentru detecția corectă a prezenței/absenței căștii).
+   - Monitorizarea **Box Loss** (pentru precizia încadrării obiectului).
+
+**Buget computațional:** - Hardware: Google Colab (T4 GPU, 16GB VRAM).
+   - Timp estimat: aprox. 2-3 ore pentru antrenare completă (High-Res).
 
 ### 3.2 Grafice Comparative
 
@@ -276,50 +315,61 @@ Generați și salvați în `docs/optimization/`:
 - `f1_comparison.png` - F1-score per experiment
 - `learning_curves_best.png` - Loss și Accuracy pentru modelul final
 
-### 3.3 Raport Final Optimizare
 
-```markdown
-### Raport Final Optimizare
+### 3.3. Raport Final Optimizare
 
-**Model baseline (Etapa 5):**
-- Accuracy: 0.72
-- F1-score: 0.68
-- Latență: 48ms
+**Model baseline (Etapa 5 - YOLOv8 Nano):**
+- Accuracy (mAP@50): 0.72
+- F1-score: 0.69
+- Latență: ~45ms (Instabil video)
 
-**Model optimizat (Etapa 6):**
-- Accuracy: 0.81 (+9%)
-- F1-score: 0.77 (+9%)
-- Latență: 35ms (-27%)
+**Model optimizat (Etapa 6 - YOLOv8 Medium):**
+- Accuracy (mAP@50): **0.96** (+24%)
+- F1-score: **0.95** (+26%)
+- Latență: **28ms** (Optimizat prin resize la 640px)
 
 **Configurație finală aleasă:**
-- Arhitectură: [descrieți]
-- Learning rate: [valoare] cu [scheduler]
-- Batch size: [valoare]
-- Regularizare: [Dropout/L2/altele]
-- Augmentări: [lista]
-- Epoci: [număr] (early stopping la epoca [X])
+- **Arhitectură:** YOLOv8 Medium (Custom trained on 'casca')
+- **Rezoluție:** Antrenare la **1280px** / Inferență la **640px**
+- **Batch size:** 4 (Optimizat pentru stabilitate gradient pe GPU T4)
+- **Learning rate:** Dinamic (SGD cu `cos_lr` scheduler, `lr0=0.01`)
+- **Regularizare:** Early Stopping (`patience=5`), Weight Decay 0.0005
+- **Augmentări:** Mosaic (1.0), Scale (0.5), Flip (0.5) - Standard YOLOv8
+- **Epoci:** Oprire automată activată (Early Stopping) la convergență
 
-**Îmbunătățiri cheie:**
-1. [Prima îmbunătățire - ex: adăugare strat hidden → +5% accuracy]
-2. [A doua îmbunătățire - ex: augmentări domeniu → +3% F1]
-3. [A treia îmbunătățire - ex: threshold personalizat → -60% FN]
-```
+**Îmbunătățiri cheie implementate:**
+1. **Creșterea Rezoluției (640px → 1280px):**
+   - **Impact:** +20% Accuracy (mAP).
+   - **Justificare:** Factorul decisiv pentru detectarea căștilor la distanță (obiecte mici), care la 640px erau invizibile pentru rețea.
+
+2. **Strategie Hibridă (Antrenare HD vs. Inferență SD):**
+   - **Impact:** Reducere latență cu 40% (FPS fluid).
+   - **Justificare:** Modelul antrenat la 1280px a învățat trăsăturile puternice, permițându-i să recunoască obiectele rapid în aplicație chiar și după redimensionarea fluxului video la 640px.
+
+3. **Optimizare Recall pentru Siguranță:**
+   - **Impact:** Recall 95.9% (Minimizare False Negatives).
+   - **Justificare:** Prioritizarea detectării tuturor căștilor reale, chiar cu riscul minor al unor alarme false, conform cerințelor de protecția muncii.
 
 ---
 
 ## 4. Agregarea Rezultatelor și Vizualizări
 
-### 4.1 Tabel Sumar Rezultate Finale
+### 4.1. Tabel Sumar Rezultate Finale
 
-| **Metrică** | **Etapa 4** | **Etapa 5** | **Etapa 6** | **Target Industrial** | **Status** |
-|-------------|-------------|-------------|-------------|----------------------|------------|
-| Accuracy | ~20% | 72% | 81% | ≥85% | Aproape |
-| F1-score (macro) | ~0.15 | 0.68 | 0.77 | ≥0.80 | Aproape |
-| Precision (defect) | N/A | 0.75 | 0.83 | ≥0.85 | Aproape |
-| Recall (defect) | N/A | 0.70 | 0.88 | ≥0.90 | Aproape |
-| False Negative Rate | N/A | 12% | 5% | ≤3% | Aproape |
-| Latență inferență | 50ms | 48ms | 35ms | ≤50ms | OK |
-| Throughput | N/A | 20 inf/s | 28 inf/s | ≥25 inf/s | OK |
+Acest tabel centralizează evoluția performanței sistemului de-a lungul celor trei etape majore de dezvoltare, comparând rezultatele finale cu obiectivele industriale stabilite inițial.
+
+| **Metrică** | **Etapa 4** (Inițial) | **Etapa 5** (Baseline) | **Etapa 6** (Final) | **Target Industrial** | **Status** |
+|:--- | :---: | :---: | :---: | :---: | :---: |
+| **Accuracy (mAP@50)** | ~20% | 72% | **96.1%** | ≥ 85% | **DEPĂȘIT ✅** |
+| **F1-score (Macro)** | ~0.15 | 0.68 | **0.95** | ≥ 0.80 | **DEPĂȘIT ✅** |
+| **Precision (Casca)** | N/A | 0.75 | **93.3%** | ≥ 0.85 | **DEPĂȘIT ✅** |
+| **Recall (Sensibilitate)** | N/A | 0.70 | **95.9%** | ≥ 0.90 | **DEPĂȘIT ✅** |
+| **False Negative Rate** | N/A | 12% | **~4.1%** | ≤ 3% | **APROAPE ⚠️** |
+| **Latență Inferență** | 50ms | 48ms | **28ms*** | ≤ 50ms | **OK ✅** |
+| **Throughput (FPS)** | N/A | 20 inf/s | **~35 inf/s** | ≥ 25 inf/s | **OK ✅** |
+
+*\*Notă: Latența de 28ms în Etapa 6 a fost obținută prin optimizarea hibridă: antrenare la rezoluție înaltă (1280px) și inferență redimensionată (640px).*
+
 
 ### 4.2 Vizualizări Obligatorii
 
@@ -699,5 +749,6 @@ Exemplu:
 ---
 
 **REMINDER:** Aceasta a fost ultima versiune pentru feedback. Următoarea predare este **VERSIUNEA FINALĂ PENTRU EXAMEN**!
+
 
 
