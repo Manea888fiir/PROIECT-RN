@@ -76,10 +76,13 @@ Contributia originala la setul de date este in proportie cat se poate de mare a 
 **Descriere detaliată:**
 [Explicați în 2-3 paragrafe cum ați generat datele, ce metode ați folosit, 
 de ce sunt relevante pentru problema voastră, cu ce parametri ați rulat simularea/achiziția]
-Generarea și Procesarea Datelor Experimentale
+
+
+### Generarea și Procesarea Datelor Experimentale
 Pentru generarea setului de date inițial, am utilizat ca sursă primară platforma de generare și stocare istockphoto.ai, de unde am selectat manual o colecție de 100 de imagini relevante Procesul de achiziție nu a fost aleatoriu, ci a urmat o selecție riguroasă pentru a asigura variabilitatea vizuală a căștii de protecție (unghiuri de captură diferite, fundaluri complexe și condiții de iluminare variate, culori diferite). Această abordare a permis obținerea unor date de intrare de calitate superioară ("high-quality raw data"), esențiale pentru a compensa volumul redus al dataset-ului și pentru a oferi modelului trăsături clare pentru extragerea caracteristicilor.
 Metoda centrală utilizată pentru transformarea acestor imagini brute în date de antrenament a fost adnotarea manuală integrală (manual bounding box annotation), realizată cu ajutorul instrumentului online makesense.ai. Am generat „Ground Truth-ul” necesar algoritmului YOLO prin desenarea manuală a fiecărui contur și exportarea coordonatelor normalizate în format .txt. Această etapă reprezintă o contribuție originală 100%, garantând precizia localizării căștilor și eliminând erorile de etichetare frecvente în dataset-urile automate sau publice. Relevanța acestor date este critică pentru problemă, deoarece oferă un mediu controlat și curat pentru validarea conceptului, izolând performanța modelului de zgomotul etichetelor greșite.
 În ceea ce privește parametrii de simulare, am structurat setul de date utilizând o strategie de partiționare (Data Split) de 70/15/15, alocând aleatoriu 70% din imagini pentru faza de antrenare (Train), 15% pentru evaluarea performanței (Validation) si 15% pentru testarea performantei (Test). Această distribuție a fost aleasă pentru a maximiza capacitatea de învățare a modelului pe un set limitat si pentru a mă incadra in standardul pentru proiect, păstrând totodată un eșantion relevant statistic pentru verificarea capacității de generalizare și evitarea fenomenului de overfitting.
+
 
 **Locația codului:** `src/data_acquisition/provenienta date (fisier txt)`
 **Locația datelor:** `data/raw/dataset intreg.zip(imagini + adnotarile puse cu bounding boxes)/`
@@ -87,6 +90,7 @@ Metoda centrală utilizată pentru transformarea acestor imagini brute în date 
 - Grafic comparativ: `docs/generated_vs_real.png`
 - Setup experimental: `docs/acquisition_setup.jpg` (dacă aplicabil)
 - Tabel statistici: `docs/data_statistics.csv`
+- 
 ```
 #### Exemple pentru "contribuție originală":
 -Simulări fizice realiste cu ecuații și parametri justificați  
@@ -98,6 +102,7 @@ Metoda centrală utilizată pentru transformarea acestor imagini brute în date 
 - Normalizare/standardizare (aceasta e preprocesare, nu generare)  
 - Subset dintr-un dataset public (ex: selectat 40% din ImageNet)
 ---
+
 ### 3. Diagrama State Machine a Întregului Sistem (OBLIGATORIE)
 **Cerințe:**
 - **Minimum 4-6 stări clare** cu tranziții între ele
@@ -181,6 +186,24 @@ cu vibrații și temperatură variabilă, trebuie să gestionăm reconnect autom
 Bucla de feedback [dacă există] funcționează astfel: [ex: "rezultatul inferenței 
 actualizează parametrii controlerului PID pentru reglarea vitezei motorului"].
 ```
+### Justificarea State Machine-ului ales:
+
+Am ales o arhitectură **hibridă (Procesare la cerere pentru Imagini / Monitorizare continuă pentru Video)**, pentru că proiectul nostru **trebuie să acopere două scenarii de utilizare distincte: auditul punctual al unor fotografii de la fața locului și supravegherea automată în timp real a fluxurilor video.**
+
+Stările principale sunt:
+1. **[INIT_SYSTEM]**: **Inițializarea mediului: încărcarea modelului YOLOv8 în VRAM și randarea interfeței grafice (UI) cu selectorul de sursă.**
+2. **[INPUT_HANDLING]**: **Starea de așteptare și validare a input-ului: utilizatorul încarcă o imagine (JPG/PNG) sau selectează o sursă video (MP4/Webcam).**
+3. **[INFERENCE_CORE]**: **Nucleul de procesare comun: redimensionare la 640px, rularea rețelei neuronale și (doar pentru video) aplicarea algoritmului de tracking pe axa timpului.**
+4. **[RESULT_RENDERING]**: **Afișarea rezultatului final: suprapunerea bounding box-urilor peste imaginea originală sau redarea stream-ului procesat cu FPS constant.**
+
+Tranzițiile critice sunt:
+- **[INPUT_HANDLING]** → **[INFERENCE_CORE]**: **Când un fișier este încărcat complet și formatul este validat (ex: nu e un fișier text redenumit .jpg).**
+- **[INFERENCE_CORE]** → **[ERROR]**: **Când modelul nu poate procesa matricea de pixeli (ex: fișier corupt sau dimensiuni atipice).**
+
+Starea ERROR este esențială pentru că **utilizatorii pot încărca din greșeală fișiere nesuportate sau corupte, iar aplicația trebuie să afișeze un mesaj de avertizare ("Format invalid") și să permită o nouă încărcare, fără a se închide forțat.**
+
+Bucla de feedback funcționează astfel: **Utilizatorul vizualizează rezultatul (poza sau video-ul procesat) și, dacă observă omisiuni, ajustează slider-ul de confidență, ceea ce forțează re-intrarea în starea [RESULT_RENDERING] cu noii parametri, fără a reîncărca fișierul.**
+
 ---
 ### 4. Scheletul Complet al celor 3 Module Cerute la Curs (slide 7)
 Toate cele 3 module trebuie să **pornească și să ruleze fără erori** la predare. Nu trebuie să fie perfecte, dar trebuie să demonstreze că înțelegeți arhitectura.
@@ -189,6 +212,7 @@ Toate cele 3 module trebuie să **pornească și să ruleze fără erori** la pr
 | **1. Data Logging / Acquisition** | `src/data_acquisition/` | LLB cu VI-uri de generare/achiziție | **MUST:** Produce CSV cu datele voastre (inclusiv cele 40% originale). Cod rulează fără erori și generează minimum 100 samples demonstrative. |
 | **2. Neural Network Module** | `src/neural_network/model.py` sau folder dedicat | LLB cu VI-uri RN | **MUST:** Modelul RN definit, compilat, poate fi încărcat. **NOT required:** Model antrenat cu performanță bună (poate avea weights random/inițializați). |
 | **3. Web Service / UI** | Streamlit, Gradio, FastAPI, Flask, Dash | WebVI sau Web Publishing Tool | **MUST:** Primește input de la user și afișează un output. **NOT required:** UI frumos, funcționalități avansate. |
+
 #### Detalii per modul:
 #### **Modul 1: Data Logging / Acquisition**
 **Funcționalități obligatorii:**
@@ -277,6 +301,7 @@ proiect-rn-[nume-prenume]/
 `"Etapa 4 completă - Arhitectură SIA funcțională"`
 **Tag obligatoriu:**  
 `git tag -a v0.4-architecture -m "Etapa 4 - Skeleton complet SIA"`
+
 
 
 
