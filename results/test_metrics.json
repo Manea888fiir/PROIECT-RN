@@ -1,5 +1,0 @@
-{
-    "test_accuracy": 0.9494,
-    "test_f1_macro": 0.6506,
-    "note": "Metrics extracted from YOLOv8 evaluation (mAP50 used as Accuracy proxy)"
-}
