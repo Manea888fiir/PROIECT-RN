@@ -1,0 +1,48 @@
+# Configurație Optimizată - Etapa 6 (Licență)
+# Model: YOLOv8 Medium @ 1280px
+
+# --- Parametri Generali ---
+task: detect
+mode: train
+model: yolov8m.pt             # Arhitectură Medium (transfer learning)
+data: data.yaml               # Configurația dataset-ului
+epochs: 250                   # Limita maximă setată
+patience: 100                 # Early Stopping (oprire dacă nu învață 100 epoci)
+batch: 4                      # Optimizat pentru memoria GPU (T4)
+imgsz: 1280                   # REZOLUȚIE ÎNALTĂ - Factor Critic pentru obiecte mici
+device: 0                     # Utilizare GPU dedicat
+optimizer: auto               # Selectare automată (SGD/AdamW)
+workers: 8                    # Fire de execuție pentru încărcare date
+
+# --- Hiper-parametri Antrenare (Learning Strategy) ---
+lr0: 0.01                     # Rata de învățare inițială
+lrf: 0.01                     # Rata de învățare finală (Scheduler)
+momentum: 0.937               # Momentum pentru optimizator SGD
+weight_decay: 0.0005          # Regularizare L2 (previne overfitting)
+warmup_epochs: 3.0            # Epoci de "încălzire" a gradientului
+warmup_momentum: 0.8
+box: 7.5                      # Ponderea erorii de localizare (Bounding Box)
+cls: 0.5                      # Ponderea erorii de clasificare
+dfl: 1.5                      # Distribution Focal Loss
+
+# --- Strategie de Augmentare (Data Augmentation) ---
+augment: true                 # Activare augmentări
+hsv_h: 0.015                  # Variație nuanță (Hue) - mică
+hsv_s: 0.7                    # Variație saturație - medie
+hsv_v: 0.4                    # Variație luminozitate - medie
+degrees: 0.0                  # Fără rotație (căștile stau de obicei drept)
+translate: 0.1                # Translație +/- 10%
+scale: 0.5                    # Scalare +/- 50% (CRITIC pentru detectare la distanțe diferite)
+shear: 0.0                    # Fără deformare
+perspective: 0.0              # Fără perspectivă forțată
+flipud: 0.0                   # Fără răsturnare verticală (oamenii nu stau în cap)
+fliplr: 0.5                   # Flip orizontal (oglindire) - activat 50%
+mosaic: 1.0                   # Mosaic activat 100% (combină 4 imagini)
+mixup: 0.0                    # Mixup dezactivat
+copy_paste: 0.0               # Copy-paste dezactivat
+
+# --- Setări Salvare & Validare ---
+save: true                    # Salvează checkpoint-uri
+save_period: -1               # Doar cel mai bun și ultimul
+val: true                     # Validare automată în timpul antrenării
+plots: true                   # Generare grafice (Loss, PR-Curve)
