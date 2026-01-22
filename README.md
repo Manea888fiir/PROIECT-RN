@@ -109,16 +109,21 @@ project-name/
 * 10–15% – validation
 * 10–15% – test
 
+* S-a realizat impartirea in felul urmator: 70-15-15.
+
 **Principii respectate:**
 * Stratificare pentru clasificare
 * Fără scurgere de informație (data leakage)
 * Statistici calculate DOAR pe train și aplicate pe celelalte seturi
+
 
 ### 4.4 Salvarea rezultatelor preprocesării
 
 * Date preprocesate în `data/processed/`
 * Seturi train/val/test în foldere dedicate
 * Parametrii de preprocesare în `config/preprocessing_config.*` (opțional)
+
+  Status: Realizat.
 
 ---
 
